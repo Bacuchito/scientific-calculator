@@ -1,4 +1,4 @@
-name: CI-Build
+name: Run Tests
 
 on:
   push:
@@ -13,11 +13,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v3
+      - name: Set up Python
+        uses: actions/setup-python@v2
         with:
-          python-version: "3.10"
+          python-version: 3.9
 
       - name: Install dependencies
         run: |
@@ -27,13 +26,5 @@ jobs:
       - name: Install Xvfb
         run: sudo apt-get install xvfb
 
-      - name: Set up Xvfb
-        run: |
-          echo 'Xvfb :99 -screen 0 1280x1024x24' | sudo tee /etc/init/xvfb.conf
-          sudo service xvfb start
-
-      - name: Set up display
-        run: export DISPLAY=:99
-
-      - name: Run Tests
-        run: pytest tests/
+      - name: Run Tests with Xvfb
+        run: xvfb-run pytest tests/
